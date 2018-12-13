@@ -36,6 +36,7 @@ PickXlsx:
     if (RegexMatch(MatchExtension, "^xls.?$")) {
         SplashTextOn, 600,100,Converting excel document to html,Please wait, converting excel document to html..`n`n(PRESS ESC TO ABORT ANYTIME)
         WinMove, Converting excel document to html,,0,0
+        Winset, Transparent, 200, Converting excel document to html
         #Include excel2html.ahk
         Extract_excel2html(A_ScriptDir . "\excel2html.exe")
         RunWait, %comspec% /c %A_ScriptDir%\excel2html.exe "%RMC_certifications%"
@@ -51,6 +52,7 @@ PickXlsx:
 
     SplashTextOn, 600,100,Opening Chrome,Please wait, opening Google Chrome`n`n(PRESS ESC TO ABORT ANYTIME)
     WinMove, Opening Chrome,,0,0
+    Winset, Transparent, 200, Opening Chrome
     ; Create Chrome Instance
     driver:= ComObjCreate("Selenium.CHROMEDriver")
     driver.Get("http://www.admaterials.com.sg/umbraco")
@@ -67,7 +69,9 @@ PickXlsx:
     field.Submit()
     SplashTextOn, 600,100,Edit page,Navigating to page editor..`n`n(PRESS ESC TO ABORT ANYTIME)
     WinMove, Edit page,,0,0
-    driver.Wait(1000)
+    Winset, Transparent, 200, Edit page
+    ; driver.Wait(1000)
+    driver.WaitForScript("document.querySelector('#tab1 > div > div > div > div > div > div > div > div > div > div:nth-child(1) > div > div')", ,60000)
     try {
         error := driver.FindElementByXPath("//*[@id='login']/div/div[1]/form/div[3]/div")
         if (error) {
@@ -91,6 +95,7 @@ PickXlsx:
     SplashTextOff
     SplashTextOn, 600,100,Editing table,Waiting for source code button '<>' to render..`n`n(PRESS ESC TO ABORT ANYTIME)
     WinMove, Editing table,,0,0
+    Winset, Transparent, 200, Editing table
     driver.WaitForScript("document.querySelector('#mceu_0 > button')", ,300000) ; 5 minute timeout
     driver.Wait(1000)
     button := driver.FindElementByXPath("//*[@id='mceu_0']/button")
