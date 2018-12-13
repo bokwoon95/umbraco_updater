@@ -1,0 +1,32 @@
+✓ Regex match either xls* or html & act accordingly
+✓ If username and password fails, kill the script
+✓ Allow user to specify a username and password for the umbraco site
+    This should extend the longevity of the script should the username and password change hands in the future
+✗ Include in README how to manually setup SeleniumBasic on the user's computer so they can manually install if the bootstrapping exe fails
+✓ Right now %RMC_Certifications% is the fully qualified path to the file. Would having a dot somewhere in the fully qualified name fuck things up?
+    (FIXED) The regex was indeed erroneously matching the first dot. Changed regex from
+        ^(?P<Filename>[^.]*).(?P<Extension>.*)$
+    to the actually working
+        ^(?P<Filename>.*)\.(?P<Extension>.*)$
+    Since .* in (?P<Filename>.*) is greedy by default, it would match all the dots in the name except for the last dot before the extension, which is matched by the \. right after (?P<Filename>.*).
+✗ Add a new registry variable, times_failed, that tracks how many times login has already failed. If on the third and last try and the username/password is still the same, warn user that there have already been two failed attempts and if the third one fails the umbraco CMS will lock them out
+
+=====================================================================
+Bootstrapping (should these be wrapped up in a single ahk setup.exe?)
+=====================================================================
+✓ Add SeleniumBasic installer
+✓ Add ahk script that downloads the latest chromedriver
+    • Download html from URL https://sites.google.com/a/chromium.org/chromedriver/downloads
+    • Regex parse for the latest chromedriver version (2.44 as of now)
+        • Check if this version matches the one in the .ini file. If so, there is nothing left to do
+    • With the version number, download a zip file from this link: https://chromedriver.storage.googleapis.com/<version number>/chromedriver_win32.zip
+        • You can either use ahk's UrlDownloadToFile or Powershell's curl & equivalent
+    • Using an embedded portable version of 7zip (7za.exe), extract the chromedriver from the downloaded zipfile
+        • Cleanup the leftover file, the zip file, the html from the URL https://sites.google.com/a/chromium.org/chromedriver/downloads
+SeleniumBasic Installer Wizard details:
+---------------------------------------
+Setup - Selenium Basic
+ahk_class TWizardForm
+ahk_exe SeleniumBasic-2.0.9.0.tmp
+-> Once the wizard closes, copy the chromedriver.exe over into %LOCALAPPDATA%\SeleniumBasic\chromedriver.exe. You may need to delete the existing chromedriver.exe first.
+-> Once done, run %LOCALAPPDATA%\SeleniumBasic\vbsc.exe to ensure user has the all necessary .NET libraries
